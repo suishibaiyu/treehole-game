@@ -69,11 +69,43 @@
   .back { background:none; border:none; color:var(--accent); font-size:14px; cursor:pointer; margin-top:16px; align-self:center; transition:color .6s; }
   .realcta { margin-top:12px; }
   .themeName { font-size:11px; color:#bbb; text-align:center; margin-top:8px; letter-spacing:1px; }
+
+  /* ===== 小动效 ===== */
+  .opt:hover .art { transform:translateY(-50%) scale(1.12); }
+  /* 插画内部元素动画（随主题色 currentColor 自动变色） */
+  svg .bubble { transform-box:fill-box; transform-origin:center; animation:bubbleFloat 3s ease-in-out infinite; }
+  svg .dot { animation:dotBlink 1.4s ease-in-out infinite; }
+  svg .dot1 { animation-delay:0s; } svg .dot2 { animation-delay:.25s; } svg .dot3 { animation-delay:.5s; }
+  svg .wave { transform-box:fill-box; transform-origin:center; animation:waveOut 2.2s ease-out infinite; }
+  svg .wave2 { animation-delay:.6s; }
+  svg .heart { transform-box:fill-box; transform-origin:center; animation:heartBeat 1.6s ease-in-out infinite; }
+  svg .sun { animation:sunPulse 2.4s ease-in-out infinite; }
+  svg .cloud { transform-box:fill-box; transform-origin:center; animation:cloudDrift 4s ease-in-out infinite; }
+  @keyframes bubbleFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+  @keyframes dotBlink { 0%,100%{opacity:.2} 50%{opacity:1} }
+  @keyframes waveOut { 0%{opacity:.9; transform:scale(1)} 100%{opacity:0; transform:scale(1.3)} }
+  @keyframes heartBeat { 0%,100%{transform:scale(1)} 30%{transform:scale(1.16)} }
+  @keyframes sunPulse { 0%,100%{opacity:.75} 50%{opacity:1} }
+  @keyframes cloudDrift { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2.5px)} }
+  /* 共鸣数字弹跳 */
+  .match .num.pop { animation:numPop .6s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes numPop { 0%{transform:scale(.5); opacity:0} 60%{transform:scale(1.12)} 100%{transform:scale(1); opacity:1} }
+  /* 明信片入场 */
+  .step.on .card { animation:cardIn .55s ease; }
+  @keyframes cardIn { from{opacity:0; transform:translateY(18px) rotate(-1deg)} to{opacity:1; transform:none} }
+  /* 写作页插画轻柔浮动 */
+  #artHero svg { animation:artBreath 3.5s ease-in-out infinite; }
+  @keyframes artBreath { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+  /* 音乐按钮 */
+  .music { position:absolute; top:16px; right:16px; z-index:6; background:rgba(255,255,255,.22); color:#fff; border:1px solid rgba(255,255,255,.45); border-radius:20px; padding:6px 13px; font-size:12px; font-weight:600; cursor:pointer; letter-spacing:.5px; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); transition:.2s; }
+  .music:hover { background:rgba(255,255,255,.32); }
+  .music.on { background:rgba(255,255,255,.5); border-color:#fff; }
 </style>
 </head>
 <body data-page-node-id="s0rjTGRIguhXXvdrCtnNTY">
 <div class="app" data-page-node-id="c3VS9SUiIBRe7Xiy5SpFCc">
   <div class="top" data-page-node-id="JOuOiZNuzktlHMZHCLbUYx">
+    <button id="musicBtn" class="music" onclick="toggleMusic()">♪ 音乐 · 关</button>
     <div class="deco" data-page-node-id="C20mNcEFYD5YP43Pa9QrXI"></div><div class="deco2" data-page-node-id="DwsJbzol4T4Z1GoEEGiHXK"></div>
     <div class="kick" data-page-node-id="5tdAWWcriL2B5bRagBZwFt">匿名树洞 · 10.8 - 10.14 招募</div>
     <h1 data-page-node-id="GWqo9hvK22ShLGyxMLLacN">有些话<br data-page-node-id="fCn4KefZmc06NFwznhjR9y"><em data-page-node-id="BAZHzDMqo8wOpx935310aT">你一直没说出口</em></h1>
@@ -223,10 +255,10 @@
   let chosenArt = "mood";
   // ===== 情绪小插画（手绘线稿风，随主题色变化） =====
   const ART = {
-    speak:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="48" height="32" rx="10" fill="currentColor" fill-opacity="0.14"/><path d="M24 44l-6 10 15-10"/><circle cx="22" cy="28" r="2.5" fill="currentColor" stroke="none"/><circle cx="32" cy="28" r="2.5" fill="currentColor" stroke="none"/><circle cx="42" cy="28" r="2.5" fill="currentColor" stroke="none"/></svg>',
-    hear:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 26L38 15v34L14 38z" fill="currentColor" fill-opacity="0.14"/><path d="M14 26v12"/><path d="M46 24a10 10 0 0 1 0 16"/><path d="M53 19a17 17 0 0 1 0 26"/></svg>',
-    hide:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="22" y="8" width="20" height="7" rx="2.5" fill="currentColor" fill-opacity="0.14"/><path d="M24 15h16v6H24z" fill="currentColor" fill-opacity="0.14"/><rect x="17" y="21" width="30" height="33" rx="9" fill="currentColor" fill-opacity="0.14"/><path d="M32 47c-3-3.4-7-5.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 39 38c0 3.6-4 5.6-7 9z" fill="currentColor" stroke="none"/></svg>',
-    mood:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="42" cy="20" r="7" fill="currentColor"/><path d="M42 8v3M54 20h3M51 11l2-2M51 29l2 2"/><circle cx="20" cy="40" r="8" fill="currentColor" fill-opacity="0.14"/><circle cx="31" cy="36" r="10" fill="currentColor" fill-opacity="0.14"/><circle cx="41" cy="41" r="7" fill="currentColor" fill-opacity="0.14"/><path d="M14 48h34"/></svg>'
+    speak:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect class="bubble" x="8" y="12" width="48" height="32" rx="10" fill="currentColor" fill-opacity="0.14"/><path d="M24 44l-6 10 15-10"/><circle class="dot dot1" cx="22" cy="28" r="2.5" fill="currentColor" stroke="none"/><circle class="dot dot2" cx="32" cy="28" r="2.5" fill="currentColor" stroke="none"/><circle class="dot dot3" cx="42" cy="28" r="2.5" fill="currentColor" stroke="none"/></svg>',
+    hear:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 26L38 15v34L14 38z" fill="currentColor" fill-opacity="0.14"/><path d="M14 26v12"/><path class="wave" d="M46 24a10 10 0 0 1 0 16"/><path class="wave wave2" d="M53 19a17 17 0 0 1 0 26"/></svg>',
+    hide:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="22" y="8" width="20" height="7" rx="2.5" fill="currentColor" fill-opacity="0.14"/><path d="M24 15h16v6H24z" fill="currentColor" fill-opacity="0.14"/><rect x="17" y="21" width="30" height="33" rx="9" fill="currentColor" fill-opacity="0.14"/><path class="heart" d="M32 47c-3-3.4-7-5.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 39 38c0 3.6-4 5.6-7 9z" fill="currentColor" stroke="none"/></svg>',
+    mood:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle class="sun" cx="42" cy="20" r="7" fill="currentColor"/><path d="M42 8v3M54 20h3M51 11l2-2M51 29l2 2"/><circle class="cloud" cx="20" cy="40" r="8" fill="currentColor" fill-opacity="0.14"/><circle class="cloud" cx="31" cy="36" r="10" fill="currentColor" fill-opacity="0.14"/><circle class="cloud" cx="41" cy="41" r="7" fill="currentColor" fill-opacity="0.14"/><path d="M14 48h34"/></svg>'
   };
   // 树洞种子信：无人投稿时的盲盒兜底（诚实标注，不冒充陌生人投稿）
   const SEEDS = [
@@ -287,7 +319,9 @@
     const blindSrc = realEntries ? 'real' : 'seed';
     const real = (window.TREEHOLE_DATA && TREEHOLE_DATA.total) ? TREEHOLE_DATA.total : 0;
     const shown = real > 0 ? real : SEEDS.length;
-    document.getElementById('mnum').textContent = shown;
+    const mnum = document.getElementById('mnum');
+    mnum.textContent = shown;
+    mnum.classList.remove('pop'); void mnum.offsetWidth; mnum.classList.add('pop');
     document.getElementById('mtxt').innerHTML = real > 0 ? pick(resPool) : shown + " 句话已经被悄悄放进了树洞。<br>你的这句，会成为新的回声。";
     const blindText = pickBlind();
     document.getElementById('blindcap').textContent = blindSrc === 'seed' ? "树洞种子信 · 开洞的第一批话，随机送给你" : pick(blindCaps);
@@ -358,6 +392,63 @@
     ctx.arcTo(X,Y+H,X,Y,R);
     ctx.arcTo(X,Y,X+W,Y,R);
     ctx.closePath();
+  }
+
+  // ===== 背景音乐（Web Audio 实时合成 · 零外部文件 · 离线可用） =====
+  // 风格：五声音阶八音盒 + 低音垫 + 回声，安静、温柔、循环
+  let audioCtx=null, musicOn=false, musicTimer=null, masterGain=null, droneStarted=false;
+  const SCALE = [261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25]; // C D E G A 五声
+  function initAudio(){
+    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    masterGain = audioCtx.createGain(); masterGain.gain.value = 0.0001;
+    const delay = audioCtx.createDelay(); delay.delayTime.value = 0.38;
+    const fb = audioCtx.createGain(); fb.gain.value = 0.32;
+    delay.connect(fb); fb.connect(delay);
+    const wet = audioCtx.createGain(); wet.gain.value = 0.28;
+    delay.connect(wet); wet.connect(audioCtx.destination);
+    masterGain.connect(audioCtx.destination); masterGain.connect(delay);
+  }
+  function playNote(freq, when, dur, vol){
+    const o = audioCtx.createOscillator(); o.type='sine'; o.frequency.value=freq;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(vol, when+0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, when+dur);
+    o.connect(g); g.connect(masterGain); o.start(when); o.stop(when+dur+0.06);
+  }
+  function startDrone(){
+    const o = audioCtx.createOscillator(); o.type='sine'; o.frequency.value=130.81; // C3 低音垫
+    const g = audioCtx.createGain(); g.gain.value=0.5;
+    o.connect(g); g.connect(masterGain); o.start();
+  }
+  function scheduleNote(){
+    if(!musicOn) return;
+    playNote(SCALE[Math.floor(Math.random()*SCALE.length)], audioCtx.currentTime+0.02, 2.4, 0.5);
+    if(Math.random()<0.28){
+      const f2 = SCALE[Math.floor(Math.random()*SCALE.length)];
+      playNote(f2, audioCtx.currentTime+0.06, 2.0, 0.32);
+    }
+    musicTimer = setTimeout(scheduleNote, 1400 + Math.random()*1500);
+  }
+  function toggleMusic(){
+    if(!audioCtx) initAudio();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    musicOn = !musicOn;
+    const btn = document.getElementById('musicBtn');
+    if(musicOn){
+      masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+      masterGain.gain.setValueAtTime(Math.max(masterGain.gain.value,0.0001), audioCtx.currentTime);
+      masterGain.gain.exponentialRampToValueAtTime(0.09, audioCtx.currentTime+1.4);
+      if(!droneStarted){ startDrone(); droneStarted=true; }
+      scheduleNote();
+      btn.classList.add('on'); btn.textContent='♬ 音乐 · 开';
+    } else {
+      masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+      masterGain.gain.setValueAtTime(masterGain.gain.value, audioCtx.currentTime);
+      masterGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.5);
+      clearTimeout(musicTimer);
+      btn.classList.remove('on'); btn.textContent='♪ 音乐 · 关';
+    }
   }
 
   // 初始化：随机一套马卡龙主题 + 装饰点
