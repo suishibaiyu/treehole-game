@@ -100,6 +100,16 @@
   .music { position:absolute; top:16px; right:16px; z-index:6; background:rgba(255,255,255,.22); color:#fff; border:1px solid rgba(255,255,255,.45); border-radius:20px; padding:6px 13px; font-size:12px; font-weight:600; cursor:pointer; letter-spacing:.5px; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); transition:.2s; }
   .music:hover { background:rgba(255,255,255,.32); }
   .music.on { background:rgba(255,255,255,.5); border-color:#fff; }
+  /* ===== 明信片保存弹层（长按存相册，绕开微信下载拦截） ===== */
+  .sheet { position:fixed; inset:0; z-index:60; display:none; }
+  .sheet.on { display:block; }
+  .sheet-mask { position:absolute; inset:0; background:rgba(24,12,18,.8); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); animation:fade .25s ease; }
+  .sheet-wrap { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:13px; padding:20px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  #sheetImg { width:min(78vw,330px); max-height:62vh; border-radius:14px; box-shadow:0 18px 44px rgba(0,0,0,.45); -webkit-touch-callout:default; user-select:auto; animation:cardIn .4s ease; }
+  .sheet-tip { color:#fff; font-size:14px; line-height:1.65; text-align:center; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); padding:9px 17px; border-radius:22px; max-width:min(80vw,338px); }
+  .sheet-tip b { color:#fff; border-bottom:2px solid rgba(255,255,255,.55); padding-bottom:1px; }
+  .sheet .btn { margin-top:0; width:min(80vw,338px); }
+  .sheet .back { color:#fff; opacity:.82; margin-top:2px; }
 </style>
 </head>
 <body data-page-node-id="s0rjTGRIguhXXvdrCtnNTY">
@@ -164,11 +174,22 @@
         <div class="fortune" id="pcFortune" data-page-node-id="R9E0zcTDqSVhLY4srNbdYv">今天，宇宙也偷偷松了一口气。</div>
         <div class="foot" data-page-node-id="zzDnbYpHqV76jjlWbQNCB6"><span data-page-node-id="e8BD6Cd4V3jd6QrMREXIwa">10.18 周日 13:00｜玻璃自习室</span><div class="q" data-page-node-id="Az85Br9sZsWtD2etZJdPzV"></div></div>
       </div>
-      <button class="btn sub" onclick="share()" data-page-node-id="F1SMF39UCaDkneSu4e44du">分享到朋友圈</button>
+      <button class="btn sub" onclick="share()" data-page-node-id="F1SMF39UCaDkneSu4e44du">生成明信片 · 保存到相册</button>
       <button class="btn ghost realcta" onclick="openForm()" data-page-node-id="jhAyIQTSSb8NPFFZumSE8B">📮 去匿名投稿（真实表单）</button>
       <div class="hint" data-page-node-id="I7VXNq2AutJ5njYC5g5yY5">明信片只露代号与情绪标签，<b data-page-node-id="rT9aGVA3DEoJCV19DnWBFu">绝不暴露你写的内容</b>。<br data-page-node-id="BVGNTkKs4uLzWBu9yQKcPu">真实提交已接入树洞表单，扫码/点按钮可投。</div>
       <button class="back" onclick="back(1)" data-page-node-id="HXcnoAkDJ0K2EiWEkfu5c1">← 再写一条</button>
     </div>
+  </div>
+</div>
+
+<!-- 保存弹层：手机长按存相册 / 电脑点按钮下载 -->
+<div class="sheet" id="sheet" data-page-node-id="sheetLayer">
+  <div class="sheet-mask" onclick="closeSheet()" data-page-node-id="sheetMask"></div>
+  <div class="sheet-wrap" data-page-node-id="sheetWrap">
+    <img id="sheetImg" alt="我的树洞明信片" data-page-node-id="sheetImg">
+    <div class="sheet-tip" id="sheetTip" data-page-node-id="sheetTip">长按图片 → 保存到相册</div>
+    <button class="btn sub" id="dlBtn" onclick="downloadImg()" data-page-node-id="dlBtn">下载图片到本地</button>
+    <button class="back" onclick="closeSheet()" data-page-node-id="sheetClose">← 先不保存</button>
   </div>
 </div>
 
@@ -379,11 +400,40 @@
     x.font='24px sans-serif'; x.fillStyle=onC; x.globalAlpha=.9;
     x.fillText('10.18 周日 13:00｜玻璃自习室',48,H-72);
     x.fillText('10月有趣人类周末 · 匿名树洞',48,H-38); x.globalAlpha=1;
+    // ===== 不再直接触发下载（微信/内置浏览器会拦截）=====
+    // 改为：把图渲染进弹层，手机长按存相册，电脑点按钮下载
+    cardURL = c.toDataURL('image/png');
+    document.getElementById('sheetImg').src = cardURL;
+    const ua = navigator.userAgent;
+    const inWX = /MicroMessenger/i.test(ua);
+    const isMobile = /Android|iPhone|iPad|iPod|HarmonyOS/i.test(ua);
+    const tip = document.getElementById('sheetTip');
+    const dlBtn = document.getElementById('dlBtn');
+    if(inWX){
+      tip.innerHTML = '微信里不能直接下载：<b>长按图片 → 保存到相册</b>';
+      dlBtn.style.display = 'none';
+    } else if(isMobile){
+      tip.innerHTML = '<b>长按图片 → 保存到相册</b>';
+      dlBtn.style.display = 'none';
+    } else {
+      tip.innerHTML = '点下面「下载图片到本地」即可保存';
+      dlBtn.style.display = '';
+    }
+    document.getElementById('sheet').classList.add('on');
+  }
+
+  // 电脑端：真·下载
+  let cardURL = '';
+  function downloadImg(){
+    if(!cardURL) return;
+    const code = document.getElementById('pcCode').textContent;
     const a = document.createElement('a');
     a.download = '树洞明信片_'+code+'.png';
-    a.href = c.toDataURL('image/png');
-    a.click();
+    a.href = cardURL;
+    document.body.appendChild(a); a.click(); a.remove();
   }
+  function closeSheet(){ document.getElementById('sheet').classList.remove('on'); }
+
   function roundRect(ctx,X,Y,W,H,R){
     ctx.beginPath();
     ctx.moveTo(X+R,Y);
