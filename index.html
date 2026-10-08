@@ -29,7 +29,12 @@
   .step.on { display:flex; }
   @keyframes fade { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
   .label { font-size:13px; color:#999; letter-spacing:1px; margin-bottom:14px; }
-  .opt { border:2px solid #eee; border-radius:16px; padding:16px 18px; margin-bottom:12px; cursor:pointer; transition:.2s; background:#fafafa; }
+  .opt { border:2px solid #eee; border-radius:16px; padding:16px 64px 16px 18px; margin-bottom:12px; cursor:pointer; transition:.2s; background:#fafafa; position:relative; }
+  .opt .art { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:46px; height:46px; }
+  .opt .art svg { width:100%; height:100%; display:block; }
+  #artHero { display:flex; align-items:center; gap:12px; margin-bottom:12px; background:var(--soft); border-radius:14px; padding:10px 14px; }
+  #artHero svg { width:52px; height:52px; flex:none; }
+  #artHero .cap { font-size:13px; color:var(--accent); line-height:1.5; }
   .opt:hover { border-color:var(--accent); }
   .opt.sel { border-color:var(--accent); background:var(--soft); }
   .opt b { display:block; font-size:16px; margin-bottom:4px; }
@@ -79,13 +84,13 @@
     <!-- STEP 1 -->
     <div class="step on" id="s1" data-page-node-id="QFEYyMhuvjCC92KXvtd2Cc">
       <div class="label" data-page-node-id="j2HgDEuyDEBcFWNr6GN8xW">选一个最像此刻的你 ——</div>
-      <div class="opt" data-q="有一个人的对话框，我打过字又删掉了。我想说的是：" data-theme="0" data-page-node-id="62XUeE7bM9lG4cTnPMyEW0">
+      <div class="opt" data-q="有一个人的对话框，我打过字又删掉了。我想说的是：" data-theme="0" data-art="speak" data-page-node-id="62XUeE7bM9lG4cTnPMyEW0">
         <b data-page-node-id="IqOn284ZWINIyHObwt9HAZ">想说没说</b><i data-page-node-id="xHZKPURaAoc5jkmREWaYxb">有个人的对话框，打过字又删掉了</i></div>
-      <div class="opt" data-q="如果现在允许我骂一句 / 哭一场，我想说：" data-theme="3" data-page-node-id="pwk5vvYBVmEH7540zu5hFS">
+      <div class="opt" data-q="如果现在允许我骂一句 / 哭一场，我想说：" data-theme="3" data-art="hear" data-page-node-id="pwk5vvYBVmEH7540zu5hFS">
         <b data-page-node-id="RT6wjKBFeiaDGzT77LxX9X">想被听见</b><i data-page-node-id="J1JgvM3kGx5KpXUHwuVebc">如果现在允许我骂一句、哭一场</i></div>
-      <div class="opt" data-q="有一件事，我一直没敢告诉任何人：" data-theme="2" data-page-node-id="AoCzbAVHnCGgAEQXsSCCXL">
+      <div class="opt" data-q="有一件事，我一直没敢告诉任何人：" data-theme="2" data-art="hide" data-page-node-id="AoCzbAVHnCGgAEQXsSCCXL">
         <b data-page-node-id="JREiaYlOnmoda5GrDExaQF">藏了很久</b><i data-page-node-id="k7vn9w5uD9L92ABhABXrsK">有一件事，我一直没敢告诉任何人</i></div>
-      <div class="opt" data-q="随便说点什么也可以：" data-theme="rand" data-page-node-id="r6GGxB6FjHWVZKo03YSsiC">
+      <div class="opt" data-q="随便说点什么也可以：" data-theme="rand" data-art="mood" data-page-node-id="r6GGxB6FjHWVZKo03YSsiC">
         <b data-page-node-id="sRVFllFIlgs54Ao1Kiqh3f">此刻心情</b><i data-page-node-id="RBWa8jAbNiJ5pBblFXpzK2">随便说点什么也可以</i></div>
       <button class="btn sub" onclick="go2()" style="margin-top:18px" data-page-node-id="GBZO2Bla1RPhbVpMHWBU3l">下一步</button>
       <button class="btn mini" onclick="shuffleTheme()" data-page-node-id="xAYfNArmUWZE2PSSOL5TbA">🎨 换个心情色</button>
@@ -214,6 +219,19 @@
   ];
 
   let chosenQ = "";
+  let chosenArt = "mood";
+  // ===== 情绪小插画（手绘线稿风，随主题色变化） =====
+  const ART = {
+    speak:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="48" height="32" rx="10" fill="var(--soft)"/><path d="M24 44l-6 10 15-10"/><circle cx="22" cy="28" r="2.5" fill="var(--accent)" stroke="none"/><circle cx="32" cy="28" r="2.5" fill="var(--accent)" stroke="none"/><circle cx="42" cy="28" r="2.5" fill="var(--accent)" stroke="none"/></svg>',
+    hear:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 26L38 15v34L14 38z" fill="var(--soft)"/><path d="M14 26v12"/><path d="M46 24a10 10 0 0 1 0 16"/><path d="M53 19a17 17 0 0 1 0 26"/></svg>',
+    hide:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="22" y="8" width="20" height="7" rx="2.5" fill="var(--soft)"/><path d="M24 15h16v6H24z" fill="var(--soft)"/><rect x="17" y="21" width="30" height="33" rx="9" fill="var(--soft)"/><path d="M32 47c-3-3.4-7-5.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 39 38c0 3.6-4 5.6-7 9z" fill="var(--accent)" stroke="none"/></svg>',
+    mood:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="42" cy="20" r="7" fill="var(--soft)"/><path d="M42 8v3M54 20h3M51 11l2-2M51 29l2 2"/><circle cx="20" cy="40" r="8" fill="var(--soft)"/><circle cx="31" cy="36" r="10" fill="var(--soft)"/><circle cx="41" cy="41" r="7" fill="var(--soft)"/><path d="M14 48h34"/></svg>'
+  };
+  // 把小插画注入每个选项右侧
+  document.querySelectorAll('.opt').forEach(o=>{
+    const k = o.dataset.art;
+    if(k && ART[k]){ const s = document.createElement('span'); s.className = 'art'; s.innerHTML = ART[k]; o.appendChild(s); }
+  });
 
   document.querySelectorAll('.opt').forEach(o=>{
     o.onclick=()=>{
@@ -251,11 +269,13 @@
   function submit(){
     const t = document.getElementById('txt').value.trim();
     if(!t){ alert("写一句吧，哪怕很短。"); return; }
-    const total = (window.TREEHOLE_DATA && TREEHOLE_DATA.total) ? TREEHOLE_DATA.total : 0;
-    document.getElementById('mnum').textContent = total;
-    document.getElementById('mtxt').innerHTML = (total === 0 ? pick(zeroPool) : pick(resPool)).replace(/(个人|你)/, m=>m).split('<br>').join('<br>');
-    document.getElementById('blindcap').textContent = pick(blindCaps);
-    document.getElementById('blind').innerHTML = "「"+ pickBlind() +"」<br><span class='who'>— 来自陌生人的树洞盲盒（真实表单随机抽）</span>";
+    const real = (window.TREEHOLE_DATA && TREEHOLE_DATA.total) ? TREEHOLE_DATA.total : 0;
+    const shown = real > 0 ? real : SEEDS.length;
+    document.getElementById('mnum').textContent = shown;
+    document.getElementById('mtxt').innerHTML = real > 0 ? pick(resPool) : "句话已经被悄悄放进了树洞。<br>你的这句，会成为新的回声。";
+    const blindText = pickBlind();
+    document.getElementById('blindcap').textContent = blindSrc === 'seed' ? "树洞种子信 · 开洞的第一批话，随机送给你" : pick(blindCaps);
+    document.getElementById('blind').innerHTML = "「"+ blindText +"」<br><span class='who'>— "+ (blindSrc === 'seed' ? "树洞种子信 · 开洞时的第一批心里话" : "来自陌生人的树洞盲盒（真实表单随机抽）") +"</span>";
     show('s3');
   }
 
