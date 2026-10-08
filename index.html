@@ -1,131 +1,218 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="H5y9NGofOc7Alb7qB8315F">
-<head data-page-node-id="6oiWwm5cRWFyXCddt9LBgQ">
-<meta charset="UTF-8" data-page-node-id="ssIb8BbnsOIR5UXHrmVIr4">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="Lo8mDJpCldz77hpJyHz4rZ">
-<title>匿名树洞 · 小游戏原型</title>
+<html lang="zh-CN" data-page-node-id="fa3zrwfxdeZDOwQHKGYzCE">
+<head data-page-node-id="5sCuEVN6EAObPcDlFuV7Mk">
+<meta charset="UTF-8" data-page-node-id="ZIJkVAUtrNETpujdjO3EK7">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="g3K4AM8WkIRkyKCKDVLyfx">
+<title>匿名树洞 · 小游戏</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; background:#f4f0ec; color:#1F1F1F; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  :root{
+    --head1:#F58FB0; --head2:#FBC4D6;
+    --accent:#E76A92; --soft:#FCE3EC;
+    --card1:#ED7FA3; --card2:#F8C2D4;
+    --ink:#3B2430; --on-card:#ffffff;
+  }
+  body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; background:#f4f0ec; color:var(--ink); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; transition:background .6s; }
   .app { width:420px; min-height:760px; background:#fff; border-radius:26px; overflow:hidden; position:relative; box-shadow:0 30px 70px rgba(0,0,0,.16); display:flex; flex-direction:column; }
-  .top { background:#EA4B36; padding:34px 30px 26px; color:#fff; position:relative; overflow:hidden; }
-  .top .kick { font-size:13px; letter-spacing:3px; opacity:.9; font-weight:700; }
-  .top h1 { font-size:34px; font-weight:900; margin-top:10px; line-height:1.25; font-style:italic; }
-  .top h1 em { font-style:normal; color:#FFE3DC; }
+  .top { background:linear-gradient(135deg,var(--head1),var(--head2)); padding:34px 30px 26px; color:#fff; position:relative; overflow:hidden; transition:background .6s; }
+  .top .kick { font-size:13px; letter-spacing:3px; opacity:.92; font-weight:700; }
+  .top h1 { font-size:33px; font-weight:900; margin-top:10px; line-height:1.25; font-style:italic; }
+  .top h1 em { font-style:normal; opacity:.85; }
   .top .lead { margin-top:14px; font-size:14px; line-height:1.6; opacity:.95; }
-  .top .deco { position:absolute; width:140px; height:140px; background:rgba(255,255,255,.08); border-radius:50%; right:-40px; top:-40px; }
-  .body { flex:1; padding:26px 28px; display:flex; flex-direction:column; }
-  .step { display:none; flex:1; flex-direction:column; animation:fade .4s ease; }
+  .top .deco { position:absolute; width:140px; height:140px; background:rgba(255,255,255,.10); border-radius:50%; right:-40px; top:-40px; }
+  .top .deco2 { position:absolute; width:70px; height:70px; background:rgba(255,255,255,.10); border-radius:50%; left:-22px; bottom:-22px; }
+  .body { flex:1; padding:26px 28px; display:flex; flex-direction:column; position:relative; }
+  /* 漂浮装饰点 */
+  .spark { position:absolute; border-radius:50%; pointer-events:none; opacity:.5; animation:float 5s ease-in-out infinite; }
+  @keyframes float { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
+  .step { display:none; flex:1; flex-direction:column; animation:fade .45s ease; }
   .step.on { display:flex; }
-  @keyframes fade { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
-  .label { font-size:13px; color:#888; letter-spacing:1px; margin-bottom:14px; }
+  @keyframes fade { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+  .label { font-size:13px; color:#999; letter-spacing:1px; margin-bottom:14px; }
   .opt { border:2px solid #eee; border-radius:16px; padding:16px 18px; margin-bottom:12px; cursor:pointer; transition:.2s; background:#fafafa; }
-  .opt:hover { border-color:#5092DC; }
-  .opt.sel { border-color:#EA4B36; background:#fff5f3; }
+  .opt:hover { border-color:var(--accent); }
+  .opt.sel { border-color:var(--accent); background:var(--soft); }
   .opt b { display:block; font-size:16px; margin-bottom:4px; }
   .opt i { font-style:normal; font-size:13px; color:#999; line-height:1.5; }
   textarea { width:100%; height:120px; border:2px solid #eee; border-radius:16px; padding:16px; font-size:16px; resize:none; font-family:inherit; outline:none; transition:.2s; }
-  textarea:focus { border-color:#5092DC; }
-  .code-row { display:flex; align-items:center; gap:10px; margin-top:14px; font-size:13px; color:#666; }
-  .code-row input { flex:1; border:1.5px solid #eee; border-radius:10px; padding:10px 12px; font-size:14px; outline:none; }
-  .code-row input:focus { border-color:#5092DC; }
-  .btn { margin-top:auto; background:#1F1F1F; color:#fff; border:none; border-radius:16px; padding:17px; font-size:16px; font-weight:700; cursor:pointer; letter-spacing:1px; transition:.2s; }
+  textarea:focus { border-color:var(--accent); }
+  .code-row { display:flex; align-items:center; gap:10px; margin-top:14px; font-size:13px; color:#888; }
+  .code-row input { flex:1; border:1.5px solid #eee; border-radius:10px; padding:10px 12px; font-size:14px; outline:none; transition:.2s; }
+  .code-row input:focus { border-color:var(--accent); }
+  .btn { margin-top:auto; background:var(--ink); color:#fff; border:none; border-radius:16px; padding:17px; font-size:16px; font-weight:700; cursor:pointer; letter-spacing:1px; transition:.2s; }
   .btn:active { transform:scale(.98); }
-  .btn.sec { background:#5092DC; }
-  .btn.sub { background:#EA4B36; }
-  .btn.ghost { background:#fff; color:#EA4B36; border:2px solid #EA4B36; }
+  .btn.sec { background:var(--accent); }
+  .btn.sub { background:var(--accent); }
+  .btn.ghost { background:#fff; color:var(--accent); border:2px solid var(--accent); }
+  .btn.mini { background:transparent; color:var(--accent); border:1.5px dashed var(--accent); padding:11px; margin-top:14px; font-size:13px; font-weight:600; letter-spacing:.5px; }
   /* result */
   .match { text-align:center; padding:8px 0 4px; }
-  .match .num { font-size:64px; font-weight:900; color:#EA4B36; line-height:1; }
-  .match .txt { font-size:15px; color:#444; margin-top:8px; line-height:1.6; }
-  .quote { margin:20px 0; background:#f7f4f1; border-left:5px solid #5092DC; border-radius:0 12px 12px 0; padding:16px 18px; font-size:14px; color:#555; line-height:1.7; font-style:italic; }
-  .quote .who { display:block; margin-top:8px; font-style:normal; font-size:12px; color:#999; }
-  .blindcap { font-size:12px; color:#5092DC; letter-spacing:1px; margin:4px 0 2px; }
+  .match .num { font-size:64px; font-weight:900; color:var(--accent); line-height:1; transition:color .6s; }
+  .match .txt { font-size:15px; color:#555; margin-top:8px; line-height:1.6; }
+  .quote { margin:20px 0; background:var(--soft); border-left:5px solid var(--accent); border-radius:0 12px 12px 0; padding:16px 18px; font-size:14px; color:#555; line-height:1.7; font-style:italic; transition:background .6s; }
+  .quote .who { display:block; margin-top:8px; font-style:normal; font-size:12px; color:#aaa; }
+  .blindcap { font-size:12px; color:var(--accent); letter-spacing:1px; margin:4px 0 2px; transition:color .6s; }
   /* postcard */
-  .card { background:linear-gradient(135deg,#EA4B36,#5092DC); border-radius:18px; padding:26px 22px; color:#fff; position:relative; overflow:hidden; }
-  .card .tag { display:inline-block; background:rgba(255,255,255,.25); padding:5px 12px; border-radius:20px; font-size:12px; letter-spacing:1px; }
-  .card .code { font-size:30px; font-weight:900; margin:18px 0 6px; font-style:italic; }
-  .card .em { font-size:15px; opacity:.95; line-height:1.6; }
-  .card .foot { margin-top:20px; font-size:12px; opacity:.85; display:flex; justify-content:space-between; align-items:center; }
-  .card .q { width:46px; height:46px; border:2px dashed rgba(255,255,255,.6); border-radius:8px; }
-  .hint { font-size:12px; color:#aaa; text-align:center; margin-top:14px; line-height:1.6; }
-  .back { background:none; border:none; color:#5092DC; font-size:14px; cursor:pointer; margin-top:16px; align-self:center; }
+  .card { background:linear-gradient(135deg,var(--card1),var(--card2)); border-radius:18px; padding:26px 22px; color:var(--on-card); position:relative; overflow:hidden; transition:background .6s; min-height:200px; }
+  .card .tag { display:inline-block; background:rgba(255,255,255,.28); padding:5px 12px; border-radius:20px; font-size:12px; letter-spacing:1px; }
+  .card .code { font-size:30px; font-weight:900; margin:16px 0 6px; font-style:italic; }
+  .card .em { font-size:15px; opacity:.96; line-height:1.6; }
+  .card .fortune { margin-top:14px; font-size:13px; opacity:.9; line-height:1.6; border-top:1px solid rgba(255,255,255,.35); padding-top:12px; font-style:italic; }
+  .card .foot { margin-top:18px; font-size:12px; opacity:.9; display:flex; justify-content:space-between; align-items:center; }
+  .card .q { width:46px; height:46px; border:2px dashed rgba(255,255,255,.7); border-radius:8px; }
+  .hint { font-size:12px; color:#bbb; text-align:center; margin-top:14px; line-height:1.6; }
+  .back { background:none; border:none; color:var(--accent); font-size:14px; cursor:pointer; margin-top:16px; align-self:center; transition:color .6s; }
   .realcta { margin-top:12px; }
+  .themeName { font-size:11px; color:#bbb; text-align:center; margin-top:8px; letter-spacing:1px; }
 </style>
 </head>
-<body data-page-node-id="twF1rTqLZoBq8duXTRChc5">
-<div class="app" data-page-node-id="pb0xLYIfNArCxAr7f4vN8V">
-  <div class="top" data-page-node-id="g8aJySeTPG7NlFRsWnyeJC">
-    <div class="deco" data-page-node-id="uUZH3JEydXaqb5LoM6LE2C"></div>
-    <div class="kick" data-page-node-id="hkCsqyctVEANF5SgBRG9BB">匿名树洞 · 10.8 - 10.14 招募</div>
-    <h1 data-page-node-id="o7xkKdXBAJCKlOREaU3QK3">有些话<br data-page-node-id="cRzCeKIiOrlZuB2IVlhbjf"><em data-page-node-id="jCz6hwYEdSCFYdTiIpSOYR">你一直没说出口</em></h1>
-    <div class="lead" data-page-node-id="82zZAPjFCjda8WBkZv9EAC">写下来。不写名字，不用解释。<br data-page-node-id="OJDfOn2roxdK7U1sNUb4tO">它会变成 10.18 那面墙上的纸条。</div>
+<body data-page-node-id="s0rjTGRIguhXXvdrCtnNTY">
+<div class="app" data-page-node-id="c3VS9SUiIBRe7Xiy5SpFCc">
+  <div class="top" data-page-node-id="JOuOiZNuzktlHMZHCLbUYx">
+    <div class="deco" data-page-node-id="C20mNcEFYD5YP43Pa9QrXI"></div><div class="deco2" data-page-node-id="DwsJbzol4T4Z1GoEEGiHXK"></div>
+    <div class="kick" data-page-node-id="5tdAWWcriL2B5bRagBZwFt">匿名树洞 · 10.8 - 10.14 招募</div>
+    <h1 data-page-node-id="GWqo9hvK22ShLGyxMLLacN">有些话<br data-page-node-id="fCn4KefZmc06NFwznhjR9y"><em data-page-node-id="BAZHzDMqo8wOpx935310aT">你一直没说出口</em></h1>
+    <div class="lead" data-page-node-id="REOiMDO1qf8s20oCDU7hIB">写下来。不写名字，不用解释。<br data-page-node-id="FGgrGsy65uoXrmCUJkBp8i">它会变成 10.18 那面墙上的纸条。</div>
   </div>
 
-  <div class="body" data-page-node-id="740uKRZCfuvphYG5fOrsDN">
+  <div class="body" id="body" data-page-node-id="quIVCiKuktSq8FqQafeAZ8">
     <!-- STEP 1 -->
-    <div class="step on" id="s1" data-page-node-id="IT1hTNAoxAxIqKhyajHU8W">
-      <div class="label" data-page-node-id="7YkqCodSdyA1IB6V2myB8d">选一个最像此刻的你 ——</div>
-      <div class="opt" data-q="有一个人的对话框，我打过字又删掉了。我想说的是：" data-page-node-id="y3Us6Ci1EbFx0F8UM7Vg6o">
-        <b data-page-node-id="rURUUvDG1OlXpGO5wnL5Sz">想说没说</b><i data-page-node-id="NyEcSsDFcMyuGsPLN7S0HV">有个人的对话框，打过字又删掉了</i></div>
-      <div class="opt" data-q="如果现在允许我骂一句 / 哭一场，我想说：" data-page-node-id="XjIdutvl2MZNRd2vvc5BmH">
-        <b data-page-node-id="XqgEFa5p101dthFJsIeCTO">想被听见</b><i data-page-node-id="wpELaAnQiM7pR3QXmCUm6I">如果现在允许我骂一句、哭一场</i></div>
-      <div class="opt" data-q="有一件事，我一直没敢告诉任何人：" data-page-node-id="CVbVWtvvgNq026qjimPJmc">
-        <b data-page-node-id="Ck2AGa0wjNo07DC5u37XFF">藏了很久</b><i data-page-node-id="Bz1dmmmieD3yxoHtqFGCOs">有一件事，我一直没敢告诉任何人</i></div>
-      <div class="opt" data-q="随便说点什么也可以：" data-page-node-id="alErcfaruGgbfbNj70OAuW">
-        <b data-page-node-id="OKDq7wUZsj1FhWYYAnOD6S">此刻心情</b><i data-page-node-id="lrK8IAh8FoaaVOtjYx7pFb">随便说点什么也可以</i></div>
-      <button class="btn sub" onclick="go2()" style="margin-top:18px" data-page-node-id="eNYfLHqB8hiXREGZmhqm2I">下一步</button>
+    <div class="step on" id="s1" data-page-node-id="QFEYyMhuvjCC92KXvtd2Cc">
+      <div class="label" data-page-node-id="j2HgDEuyDEBcFWNr6GN8xW">选一个最像此刻的你 ——</div>
+      <div class="opt" data-q="有一个人的对话框，我打过字又删掉了。我想说的是：" data-theme="0" data-page-node-id="62XUeE7bM9lG4cTnPMyEW0">
+        <b data-page-node-id="IqOn284ZWINIyHObwt9HAZ">想说没说</b><i data-page-node-id="xHZKPURaAoc5jkmREWaYxb">有个人的对话框，打过字又删掉了</i></div>
+      <div class="opt" data-q="如果现在允许我骂一句 / 哭一场，我想说：" data-theme="3" data-page-node-id="pwk5vvYBVmEH7540zu5hFS">
+        <b data-page-node-id="RT6wjKBFeiaDGzT77LxX9X">想被听见</b><i data-page-node-id="J1JgvM3kGx5KpXUHwuVebc">如果现在允许我骂一句、哭一场</i></div>
+      <div class="opt" data-q="有一件事，我一直没敢告诉任何人：" data-theme="2" data-page-node-id="AoCzbAVHnCGgAEQXsSCCXL">
+        <b data-page-node-id="JREiaYlOnmoda5GrDExaQF">藏了很久</b><i data-page-node-id="k7vn9w5uD9L92ABhABXrsK">有一件事，我一直没敢告诉任何人</i></div>
+      <div class="opt" data-q="随便说点什么也可以：" data-theme="rand" data-page-node-id="r6GGxB6FjHWVZKo03YSsiC">
+        <b data-page-node-id="sRVFllFIlgs54Ao1Kiqh3f">此刻心情</b><i data-page-node-id="RBWa8jAbNiJ5pBblFXpzK2">随便说点什么也可以</i></div>
+      <button class="btn sub" onclick="go2()" style="margin-top:18px" data-page-node-id="GBZO2Bla1RPhbVpMHWBU3l">下一步</button>
+      <button class="btn mini" onclick="shuffleTheme()" data-page-node-id="xAYfNArmUWZE2PSSOL5TbA">🎨 换个心情色</button>
+      <div class="themeName" id="themeName" data-page-node-id="SRHtMxXpdPSF9jqb3FuWrs"></div>
     </div>
 
     <!-- STEP 2 -->
-    <div class="step" id="s2" data-page-node-id="FEAwQ2d2fqwzqUmZmqv8Pi">
-      <div class="label" id="qlabel" data-page-node-id="phXUUSVGVJt5tUa5AqeqgC">写下那句话 ——</div>
+    <div class="step" id="s2" data-page-node-id="sP7R2nGGnuIJDQM78K20t7">
+      <div class="label" id="qlabel" data-page-node-id="nCh4eE6I3MVncxr51jv9JN">写下那句话 ——</div>
       <textarea id="txt" placeholder="不用很长，一句话就够。"></textarea>
-      <div class="code-row" data-page-node-id="mfZ5pCuU29cgOHsZwinvAE">
-        <span data-page-node-id="VgzxDYyrwJlVVpt9yCbzAK">代号（可空）</span>
-        <input id="codein" placeholder="不填就随机生成" data-page-node-id="10n7zdQemrk1JVBFLvITjx">
+      <div class="code-row" data-page-node-id="Ga9Tdk5THjSgXq14tXnJD2">
+        <span data-page-node-id="GUI5ZFzFrNYOVhDTGlNghx">代号（可空）</span>
+        <input id="codein" placeholder="不填就随机生成" data-page-node-id="6Vz6a1dckV2AC1DN0QP2P3">
       </div>
-      <button class="btn sub" onclick="submit()" data-page-node-id="l0WJgJPWVakHfbtHjCAWGH">封进树洞</button>
-      <button class="back" onclick="back(1)" data-page-node-id="Qv1mCb65KXpSBZByCBvAae">← 重选</button>
+      <button class="btn sub" onclick="submit()" data-page-node-id="qzUiT7Ol0ZaCBabW3MVE9a">封进树洞</button>
+      <button class="back" onclick="back(1)" data-page-node-id="DT8ertGrzVCFVHzoCfZRGV">← 重选</button>
     </div>
 
     <!-- STEP 3 -->
-    <div class="step" id="s3" data-page-node-id="gM2dCXC2wzAcbmxydljvM1">
-      <div class="match" data-page-node-id="y9TJBophOktAn6nPEe5qmI">
-        <div class="num" id="mnum" data-page-node-id="SdYhm8K57gsp0pEdhDeevD">12</div>
-        <div class="txt" id="mtxt" data-page-node-id="CLOqcI46Jqz2Zvz9V1vaKD">个人和你一样，把这句话放在了心里。<br data-page-node-id="2uQwFJvW1ImOayFUHqGEKd">你不是唯一一个。</div>
+    <div class="step" id="s3" data-page-node-id="YJeoosxcjLCPYgK7usNBTy">
+      <div class="match" data-page-node-id="po8lHxDpQbCQk2AXj7wJzg">
+        <div class="num" id="mnum" data-page-node-id="ROv8JhYqRJnhjZlcwUlVEK">12</div>
+        <div class="txt" id="mtxt" data-page-node-id="GBL1hzrgfY6T1KnX3qEeDk">个人和你一样，把这句话放在了心里。<br data-page-node-id="4TjcIftGRDp6rejNrZUPtW">你不是唯一一个。</div>
       </div>
-      <div class="blindcap" data-page-node-id="aEThCKbw9VrGxDlHJu1T4p">树洞盲盒 · 一条陌生人的心里话，随机送给你</div>
-      <div class="quote" id="blind" data-page-node-id="rqUAyidQckUDsJFaIZZBBx">「_<br data-page-node-id="vNwXqXqF3WcnMvxE3w6yvE"><span class="who" data-page-node-id="TRzdbiV3whIl7YL1MmQFtj">— 来自陌生人的树洞盲盒</span></div>
-      <button class="btn sec" onclick="go4()" data-page-node-id="FnGDn3gKWvVIaFgK2MFjok">生成我的树洞明信片</button>
-      <button class="btn ghost realcta" onclick="openForm()" data-page-node-id="GChseeYDK9OZG1tYoOpFDt">去真实匿名投稿 →</button>
+      <div class="blindcap" id="blindcap" data-page-node-id="glt9mZyqjajje7Um1Kydtd">树洞盲盒 · 一条陌生人的心里话，随机送给你</div>
+      <div class="quote" id="blind" data-page-node-id="nkI0f0DUcpzPIwkOBFTYZX">「_<br data-page-node-id="bFtHo12CK2sVDElcKqriFy"><span class="who" data-page-node-id="Ya1wAym6jS6phzSEJqLdCx">— 来自陌生人的树洞盲盒（真实表单随机抽）</span></div>
+      <button class="btn sec" onclick="go4()" data-page-node-id="vTdwXdsaLCgQ81YSq8K9Jw">生成我的树洞明信片</button>
+      <button class="btn ghost realcta" onclick="openForm()" data-page-node-id="upkqPrB1IzMgGm9QHVxd42">去真实匿名投稿 →</button>
     </div>
 
     <!-- STEP 4 -->
-    <div class="step" id="s4" data-page-node-id="HKzt4BFMy1zrWp0xnaOP3r">
-      <div class="label" style="text-align:center" data-page-node-id="di8RULiAqj2Q7Rv2RK95ri">你的匿名明信片</div>
-      <div class="card" id="pc" data-page-node-id="Bpz78ttsYg74Bgo6PCuhce">
-        <span class="tag" id="pcTag" data-page-node-id="q4nuiVoiGXoPQN2w8TtqCJ">#想说没说</span>
-        <div class="code" id="pcCode" data-page-node-id="mua50XqzAb1nj5STAlejTr">晚风七号</div>
-        <div class="em" data-page-node-id="5LbJkhmjOMx0oSjCovaVVZ">今天，我把一句没说出口的话，<br data-page-node-id="GsM4BW3SFBFi5ucLG1Dxjq">放进了有趣的树洞。</div>
-        <div class="foot" data-page-node-id="KVfCmbeyGhdFbp8GdyUFrH"><span data-page-node-id="zXGJDDaQfEwYCfoPExc3vF">10.18 周日 13:00｜玻璃自习室</span><div class="q" data-page-node-id="R2cJFk9YrHappcdzaDDSSA"></div></div>
+    <div class="step" id="s4" data-page-node-id="QaM3tJqYSFbEjK7uSdNErx">
+      <div class="label" style="text-align:center" data-page-node-id="xribKixoX9ff4jA2NuBxCs">你的匿名明信片</div>
+      <div class="card" id="pc" data-page-node-id="AZVkH1x5CSWs9nuBjrPEsk">
+        <span class="tag" id="pcTag" data-page-node-id="3C1naSajVwjDTUIXEuxf72">#想说没说</span>
+        <div class="code" id="pcCode" data-page-node-id="qIlq34kCRJAfUgam4nIsgy">晚风七号</div>
+        <div class="em" data-page-node-id="meRC2BTmRQBIO9S8Ad4eGV">今天，我把一句没说出口的话，<br data-page-node-id="9snCaE4hLq9M1E4EGY4tms">放进了有趣的树洞。</div>
+        <div class="fortune" id="pcFortune" data-page-node-id="R9E0zcTDqSVhLY4srNbdYv">今天，宇宙也偷偷松了一口气。</div>
+        <div class="foot" data-page-node-id="zzDnbYpHqV76jjlWbQNCB6"><span data-page-node-id="e8BD6Cd4V3jd6QrMREXIwa">10.18 周日 13:00｜玻璃自习室</span><div class="q" data-page-node-id="Az85Br9sZsWtD2etZJdPzV"></div></div>
       </div>
-      <button class="btn sub" onclick="share()" data-page-node-id="bTFJ0Gheg2GKziyOC9HRTK">分享到朋友圈</button>
-      <button class="btn ghost realcta" onclick="openForm()" data-page-node-id="KVMUtQBuNtdlo7nNza8viF">📮 去匿名投稿（真实表单）</button>
-      <div class="hint" data-page-node-id="Xw44YcY1ZmlkOo0doeDGsf">明信片只露代号与情绪标签，<b data-page-node-id="X5Ysgbr2pGGtSsuztudfsi">绝不暴露你写的内容</b>。<br data-page-node-id="I76yocD7N6lgx3P6lm7nNY">真实提交已接入树洞表单，扫码/点按钮可投。</div>
-      <button class="back" onclick="back(1)" data-page-node-id="j1f2EklL1Ycd7WLrPy3kqY">← 再写一条</button>
+      <button class="btn sub" onclick="share()" data-page-node-id="F1SMF39UCaDkneSu4e44du">分享到朋友圈</button>
+      <button class="btn ghost realcta" onclick="openForm()" data-page-node-id="jhAyIQTSSb8NPFFZumSE8B">📮 去匿名投稿（真实表单）</button>
+      <div class="hint" data-page-node-id="I7VXNq2AutJ5njYC5g5yY5">明信片只露代号与情绪标签，<b data-page-node-id="rT9aGVA3DEoJCV19DnWBFu">绝不暴露你写的内容</b>。<br data-page-node-id="BVGNTkKs4uLzWBu9yQKcPu">真实提交已接入树洞表单，扫码/点按钮可投。</div>
+      <button class="back" onclick="back(1)" data-page-node-id="HXcnoAkDJ0K2EiWEkfu5c1">← 再写一条</button>
     </div>
   </div>
 </div>
 
-<!-- 真实树洞数据（由腾讯文档表单生成，详见 treehole-data.js 顶部说明） -->
 <script src="treehole-data.js"></script>
 <script>
   // ===== 真实匿名表单链接（已建好，公开可填） =====
-  // 这是腾讯文档智能表格的「匿名树洞投稿」表单视图，匿名访客打开即进入填写页。
   const FORM_URL = "https://docs.qq.com/smartsheet/DWHRKa1lyYWlQdmRF?viewId=v09aOE";
 
-  const presets = ["晚风","落日","雾","海盐","薄荷","旧信","北岛","木棉","半糖","深蓝","月亮","纸鸢","晴川","拾光","南风","野葵","溪午","星轨"];
+  // ===== 马卡龙主题（6 套，随机 + 情绪匹配） =====
+  const THEMES = [
+    {name:'草莓奶霜', head1:'#F58FB0', head2:'#FBC4D6', accent:'#E76A92', soft:'#FCE3EC', card1:'#ED7FA3', card2:'#F8C2D4', ink:'#3B2430', onCard:'#ffffff'},
+    {name:'薄荷气泡', head1:'#6FCFAE', head2:'#B6E9D6', accent:'#3FA98B', soft:'#E1F4EC', card1:'#54BE9E', card2:'#B6E9D6', ink:'#1E3A30', onCard:'#ffffff'},
+    {name:'薰衣草梦', head1:'#A98FE0', head2:'#D2C4F2', accent:'#7E63D0', soft:'#ECE5F8', card1:'#9277E2', card2:'#D6C8F4', ink:'#2C2342', onCard:'#ffffff'},
+    {name:'蜜桃夕阳', head1:'#FF9E76', head2:'#FFD2B5', accent:'#F07B4E', soft:'#FFE7D8', card1:'#F5895B', card2:'#FFD0B3', ink:'#3B2418', onCard:'#ffffff'},
+    {name:'奶油柠檬', head1:'#E8C24E', head2:'#F8E6A0', accent:'#C99A2E', soft:'#FBF1CC', card1:'#D9B23E', card2:'#F6E39A', ink:'#3B3210', onCard:'#4A3A10'},
+    {name:'天空之境', head1:'#79BEEA', head2:'#BBDDF5', accent:'#3F9BD8', soft:'#E4F1FB', card1:'#5AA9DE', card2:'#BBDDF5', ink:'#1E3340', onCard:'#ffffff'}
+  ];
+  let cur = THEMES[0];
+
+  function applyTheme(t){
+    cur = t;
+    const r = document.documentElement.style;
+    r.setProperty('--head1', t.head1);
+    r.setProperty('--head2', t.head2);
+    r.setProperty('--accent', t.accent);
+    r.setProperty('--soft', t.soft);
+    r.setProperty('--card1', t.card1);
+    r.setProperty('--card2', t.card2);
+    r.setProperty('--ink', t.ink);
+    r.setProperty('--on-card', t.onCard);
+    const tn = document.getElementById('themeName');
+    if(tn) tn.textContent = '当前心情色 · ' + t.name;
+  }
+  function shuffleTheme(){
+    applyTheme(THEMES[Math.floor(Math.random()*THEMES.length)]);
+    dropSparks();
+  }
+
+  // 漂浮装饰点
+  function dropSparks(){
+    const body = document.getElementById('body');
+    body.querySelectorAll('.spark').forEach(e=>e.remove());
+    for(let i=0;i<5;i++){
+      const s = document.createElement('div');
+      s.className = 'spark';
+      s.style.background = cur.accent;
+      s.style.width = s.style.height = (6+Math.random()*8)+'px';
+      s.style.left = (10+Math.random()*85)+'%';
+      s.style.top = (10+Math.random()*80)+'%';
+      s.style.animationDelay = (Math.random()*4)+'s';
+      body.appendChild(s);
+    }
+  }
+
+  // ===== 随机文案池 =====
+  const presets = ["晚风","落日","雾","海盐","薄荷","旧信","北岛","木棉","半糖","深蓝","月亮","纸鸢","晴川","拾光","南风","野葵","溪午","星轨","奶油","青柚"];
+  const resPool = [
+    "个人已经把一句话，放进了这个树洞。你不是唯一一个。",
+    "个人和你一样，把心事藏进了同一个角落。",
+    "个人，正隔着屏幕和你轻轻共鸣。"
+  ];
+  const zeroPool = [
+    "树洞刚刚亮灯，你就是第一个。你写下的话，会接住下一个人。",
+    "还没有别人来过。这一声，由你先开。",
+    "空荡荡的树洞里，你的话是落下的第一片叶子。"
+  ];
+  const blindCaps = [
+    "树洞盲盒 · 一条陌生人的心里话，随机送给你",
+    "盲盒开箱 · 这是别人偷偷藏进树洞的话",
+    "来自远方的树洞 · 随机掉落一条陌生人的心事"
+  ];
+  const fortunes = [
+    "今天，宇宙也偷偷松了一口气。",
+    "你藏住的话，正在某处悄悄发芽。",
+    "温柔的人，会被温柔回访。",
+    "今晚的月亮，替你说了半句。",
+    "慢一点也没关系，树洞一直等你。",
+    "有人在很远的地方，需要你这句话的回声。",
+    "你已经很勇敢了，光是写下来就是。",
+    "所有说不出口的，都会找到出口。"
+  ];
+
   let chosenQ = "";
 
   document.querySelectorAll('.opt').forEach(o=>{
@@ -133,12 +220,18 @@
       document.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
       o.classList.add('sel');
       chosenQ = o.dataset.q;
+      // 选情绪即切换对应马卡龙色系
+      let tIdx = o.dataset.theme;
+      if(tIdx === 'rand'){ applyTheme(THEMES[Math.random()<0.5?1:5]); }
+      else { applyTheme(THEMES[parseInt(tIdx)]); }
+      dropSparks();
     };
   });
 
   function show(id){ document.querySelectorAll('.step').forEach(s=>s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
   function back(n){ show('s'+n); }
   function openForm(){ window.open(FORM_URL, '_blank'); }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
   function go2(){
     if(!chosenQ){ alert("先选一个入口～"); return; }
@@ -158,15 +251,10 @@
   function submit(){
     const t = document.getElementById('txt').value.trim();
     if(!t){ alert("写一句吧，哪怕很短。"); return; }
-    // 真实环境：此处 fetch 提交到 FORM_URL（需后端代理跨域，由我接）。
-    // 原型演示：共鸣数取自真实表单 TREEHOLE_DATA.total；盲盒从真实表单随机抽。
     const total = (window.TREEHOLE_DATA && TREEHOLE_DATA.total) ? TREEHOLE_DATA.total : 0;
     document.getElementById('mnum').textContent = total;
-    if(total === 0){
-      document.getElementById('mtxt').innerHTML = "树洞刚刚亮灯，你就是第一个。<br>你写下的话，会接住下一个人。";
-    } else {
-      document.getElementById('mtxt').innerHTML = "个人已经把一句话，放进了这个树洞。<br>你不是唯一一个。";
-    }
+    document.getElementById('mtxt').innerHTML = (total === 0 ? pick(zeroPool) : pick(resPool)).replace(/(个人|你)/, m=>m).split('<br>').join('<br>');
+    document.getElementById('blindcap').textContent = pick(blindCaps);
     document.getElementById('blind').innerHTML = "「"+ pickBlind() +"」<br><span class='who'>— 来自陌生人的树洞盲盒（真实表单随机抽）</span>";
     show('s3');
   }
@@ -174,9 +262,7 @@
   function genCode(){
     const ci = document.getElementById('codein').value.trim();
     if(ci) return ci;
-    const p = presets[Math.floor(Math.random()*presets.length)];
-    const num = Math.floor(Math.random()*99)+1;
-    return p + num + "号";
+    return presets[Math.floor(Math.random()*presets.length)] + (Math.floor(Math.random()*99)+1) + "号";
   }
 
   function go4(){
@@ -187,37 +273,42 @@
     else if(chosenQ.includes("没敢告诉")) tag = "#藏了很久";
     document.getElementById('pcCode').textContent = code;
     document.getElementById('pcTag').textContent = tag;
+    document.getElementById('pcFortune').textContent = pick(fortunes);
     show('s4');
   }
 
   function share(){
     const code = document.getElementById('pcCode').textContent;
     const tag = document.getElementById('pcTag').textContent;
+    const fortune = document.getElementById('pcFortune').textContent;
     const W=750, H=1000;
     const c = document.createElement('canvas');
     c.width=W; c.height=H;
     const x = c.getContext('2d');
-    // 渐变背景
+    const onC = cur.onCard;
     const g = x.createLinearGradient(0,0,W,H);
-    g.addColorStop(0,'#EA4B36'); g.addColorStop(1,'#5092DC');
+    g.addColorStop(0,cur.card1); g.addColorStop(1,cur.card2);
     x.fillStyle=g; x.fillRect(0,0,W,H);
     // 标签胶囊
-    x.fillStyle='rgba(255,255,255,.25)';
+    x.fillStyle='rgba(255,255,255,.30)';
     roundRect(x,48,70,tag.length*24+56,52,26); x.fill();
-    x.fillStyle='#fff'; x.font='600 26px sans-serif'; x.textBaseline='middle';
+    x.fillStyle=onC; x.font='600 26px sans-serif'; x.textBaseline='middle';
     x.fillText(tag,72,98);
     // 代号
-    x.font='900 72px sans-serif'; x.fillStyle='#fff';
+    x.font='900 72px sans-serif'; x.fillStyle=onC;
     x.fillText(code,48,230);
     // 文案
-    x.font='30px sans-serif';
+    x.font='30px sans-serif'; x.fillStyle=onC;
     x.fillText('今天，我把一句没说出口的话，',48,330);
     x.fillText('放进了有趣的树洞。',48,378);
+    // 今日树洞签
+    x.font='italic 26px sans-serif'; x.fillStyle=onC;
+    x.globalAlpha=.95;
+    x.fillText('「'+fortune+'」',48,452); x.globalAlpha=1;
     // 底部署名
-    x.font='24px sans-serif'; x.fillStyle='rgba(255,255,255,.9)';
+    x.font='24px sans-serif'; x.fillStyle=onC; x.globalAlpha=.9;
     x.fillText('10.18 周日 13:00｜玻璃自习室',48,H-72);
-    x.fillText('10月有趣人类周末 · 匿名树洞',48,H-38);
-    // 下载图片
+    x.fillText('10月有趣人类周末 · 匿名树洞',48,H-38); x.globalAlpha=1;
     const a = document.createElement('a');
     a.download = '树洞明信片_'+code+'.png';
     a.href = c.toDataURL('image/png');
@@ -232,6 +323,10 @@
     ctx.arcTo(X,Y,X+W,Y,R);
     ctx.closePath();
   }
+
+  // 初始化：随机一套马卡龙主题 + 装饰点
+  applyTheme(THEMES[Math.floor(Math.random()*THEMES.length)]);
+  dropSparks();
 </script>
 </body>
 </html>
