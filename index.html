@@ -30,9 +30,9 @@
   @keyframes fade { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
   .label { font-size:13px; color:#999; letter-spacing:1px; margin-bottom:14px; }
   .opt { border:2px solid #eee; border-radius:16px; padding:16px 64px 16px 18px; margin-bottom:12px; cursor:pointer; transition:.2s; background:#fafafa; position:relative; }
-  .opt .art { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:46px; height:46px; }
+  .opt .art { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:46px; height:46px; color:var(--accent); }
   .opt .art svg { width:100%; height:100%; display:block; }
-  #artHero { display:flex; align-items:center; gap:12px; margin-bottom:12px; background:var(--soft); border-radius:14px; padding:10px 14px; }
+  #artHero { display:flex; align-items:center; gap:12px; margin-bottom:12px; background:var(--soft); border-radius:14px; padding:10px 14px; color:var(--accent); }
   #artHero svg { width:52px; height:52px; flex:none; }
   #artHero .cap { font-size:13px; color:var(--accent); line-height:1.5; }
   .opt:hover { border-color:var(--accent); }
@@ -100,6 +100,7 @@
     <!-- STEP 2 -->
     <div class="step" id="s2" data-page-node-id="sP7R2nGGnuIJDQM78K20t7">
       <div class="label" id="qlabel" data-page-node-id="nCh4eE6I3MVncxr51jv9JN">写下那句话 ——</div>
+      <div id="artHero"><span id="artHeroSvg"></span><span id="artHeroCap" class="cap"></span></div>
       <textarea id="txt" placeholder="不用很长，一句话就够。"></textarea>
       <div class="code-row" data-page-node-id="Ga9Tdk5THjSgXq14tXnJD2">
         <span data-page-node-id="GUI5ZFzFrNYOVhDTGlNghx">代号（可空）</span>
@@ -222,11 +223,20 @@
   let chosenArt = "mood";
   // ===== 情绪小插画（手绘线稿风，随主题色变化） =====
   const ART = {
-    speak:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="48" height="32" rx="10" fill="var(--soft)"/><path d="M24 44l-6 10 15-10"/><circle cx="22" cy="28" r="2.5" fill="var(--accent)" stroke="none"/><circle cx="32" cy="28" r="2.5" fill="var(--accent)" stroke="none"/><circle cx="42" cy="28" r="2.5" fill="var(--accent)" stroke="none"/></svg>',
-    hear:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 26L38 15v34L14 38z" fill="var(--soft)"/><path d="M14 26v12"/><path d="M46 24a10 10 0 0 1 0 16"/><path d="M53 19a17 17 0 0 1 0 26"/></svg>',
-    hide:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="22" y="8" width="20" height="7" rx="2.5" fill="var(--soft)"/><path d="M24 15h16v6H24z" fill="var(--soft)"/><rect x="17" y="21" width="30" height="33" rx="9" fill="var(--soft)"/><path d="M32 47c-3-3.4-7-5.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 39 38c0 3.6-4 5.6-7 9z" fill="var(--accent)" stroke="none"/></svg>',
-    mood:'<svg viewBox="0 0 64 64" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="42" cy="20" r="7" fill="var(--soft)"/><path d="M42 8v3M54 20h3M51 11l2-2M51 29l2 2"/><circle cx="20" cy="40" r="8" fill="var(--soft)"/><circle cx="31" cy="36" r="10" fill="var(--soft)"/><circle cx="41" cy="41" r="7" fill="var(--soft)"/><path d="M14 48h34"/></svg>'
+    speak:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="48" height="32" rx="10" fill="currentColor" fill-opacity="0.14"/><path d="M24 44l-6 10 15-10"/><circle cx="22" cy="28" r="2.5" fill="currentColor" stroke="none"/><circle cx="32" cy="28" r="2.5" fill="currentColor" stroke="none"/><circle cx="42" cy="28" r="2.5" fill="currentColor" stroke="none"/></svg>',
+    hear:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 26L38 15v34L14 38z" fill="currentColor" fill-opacity="0.14"/><path d="M14 26v12"/><path d="M46 24a10 10 0 0 1 0 16"/><path d="M53 19a17 17 0 0 1 0 26"/></svg>',
+    hide:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="22" y="8" width="20" height="7" rx="2.5" fill="currentColor" fill-opacity="0.14"/><path d="M24 15h16v6H24z" fill="currentColor" fill-opacity="0.14"/><rect x="17" y="21" width="30" height="33" rx="9" fill="currentColor" fill-opacity="0.14"/><path d="M32 47c-3-3.4-7-5.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 39 38c0 3.6-4 5.6-7 9z" fill="currentColor" stroke="none"/></svg>',
+    mood:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="42" cy="20" r="7" fill="currentColor"/><path d="M42 8v3M54 20h3M51 11l2-2M51 29l2 2"/><circle cx="20" cy="40" r="8" fill="currentColor" fill-opacity="0.14"/><circle cx="31" cy="36" r="10" fill="currentColor" fill-opacity="0.14"/><circle cx="41" cy="41" r="7" fill="currentColor" fill-opacity="0.14"/><path d="M14 48h34"/></svg>'
   };
+  // 树洞种子信：无人投稿时的盲盒兜底（诚实标注，不冒充陌生人投稿）
+  const SEEDS = [
+    "我也曾在深夜反复删掉同一句话。",
+    "希望明天的我，能对自己温柔一点。",
+    "有些事说出来矫情，不说又憋得慌。",
+    "其实我已经很努力了，只是没人看见。",
+    "想给很久没联系的人，发一句你还好吗。",
+    "今天也假装没事，但其实有点累。"
+  ];
   // 把小插画注入每个选项右侧
   document.querySelectorAll('.opt').forEach(o=>{
     const k = o.dataset.art;
@@ -238,6 +248,11 @@
       document.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
       o.classList.add('sel');
       chosenQ = o.dataset.q;
+      chosenArt = o.dataset.art;
+      // 写作页展示对应插画 + 温柔提示
+      const cap = {speak:'打过字又删掉，也值得被听见。', hear:'把那句想喊出来的话，交给树洞。', hide:'藏了很久的事，写完就轻一点了。', mood:'此刻怎样都好，先记下来。'};
+      document.getElementById('artHeroSvg').innerHTML = ART[chosenArt];
+      document.getElementById('artHeroCap').textContent = cap[chosenArt];
       // 选情绪即切换对应马卡龙色系
       let tIdx = o.dataset.theme;
       if(tIdx === 'rand'){ applyTheme(THEMES[Math.random()<0.5?1:5]); }
@@ -258,21 +273,22 @@
     show('s2');
   }
 
-  // 盲盒：从真实表单（TREEHOLE_DATA.entries，去标识化）随机抽
+  // 盲盒：有真实投稿抽真实；无人投稿时抽种子信
   function pickBlind(){
-    const pool = (window.TREEHOLE_DATA && TREEHOLE_DATA.entries && TREEHOLE_DATA.entries.length)
-      ? TREEHOLE_DATA.entries
-      : ["（还没有其他人的树洞，成为第一个吧）"];
-    return pool[Math.floor(Math.random()*pool.length)];
+    const real = (window.TREEHOLE_DATA && TREEHOLE_DATA.entries && TREEHOLE_DATA.entries.length) ? TREEHOLE_DATA.entries : null;
+    if(real) return real[Math.floor(Math.random()*real.length)];
+    return SEEDS[Math.floor(Math.random()*SEEDS.length)];
   }
 
   function submit(){
     const t = document.getElementById('txt').value.trim();
     if(!t){ alert("写一句吧，哪怕很短。"); return; }
+    const realEntries = (window.TREEHOLE_DATA && TREEHOLE_DATA.entries && TREEHOLE_DATA.entries.length) ? TREEHOLE_DATA.entries : null;
+    const blindSrc = realEntries ? 'real' : 'seed';
     const real = (window.TREEHOLE_DATA && TREEHOLE_DATA.total) ? TREEHOLE_DATA.total : 0;
     const shown = real > 0 ? real : SEEDS.length;
     document.getElementById('mnum').textContent = shown;
-    document.getElementById('mtxt').innerHTML = real > 0 ? pick(resPool) : "句话已经被悄悄放进了树洞。<br>你的这句，会成为新的回声。";
+    document.getElementById('mtxt').innerHTML = real > 0 ? pick(resPool) : shown + " 句话已经被悄悄放进了树洞。<br>你的这句，会成为新的回声。";
     const blindText = pickBlind();
     document.getElementById('blindcap').textContent = blindSrc === 'seed' ? "树洞种子信 · 开洞的第一批话，随机送给你" : pick(blindCaps);
     document.getElementById('blind').innerHTML = "「"+ blindText +"」<br><span class='who'>— "+ (blindSrc === 'seed' ? "树洞种子信 · 开洞时的第一批心里话" : "来自陌生人的树洞盲盒（真实表单随机抽）") +"</span>";
